@@ -1,0 +1,39 @@
+
+(You can also check out the getting started guide at: https://confluence.aps.anl.gov/display/XPCS/XPCS+Developers+Getting+Started+Guide for
+more details).
+
+How to compile?
+---------------
+
+To compile as a single jar:
+
+    mvn install
+
+That's mostly it. But there is some fine prints, so read on: 
+  
+  The MapReduce code is written using Java. However, we use the HDF5 (http://www.hdfgroup.org/HDF5/) libraries
+to read the job parameters like input file, qmap etc. The java HDF5 library uses native libraries to run (not compile!).
+So for compiling the code, all you should have to do is to run a "mvn install" (mvn from Maven tools). This will compile
+and generate the jar file with all dependencies package as a s single jar
+
+How to run?
+------------
+
+The launcher scriprt , multitau.sh included with the code, submits our code as a job to Hadoop MapReduce cluser.
+The script mainly does the following  operations:
+  - Configures few MapReduce job parameters such as number of reducers. 
+  - Specify the JVM options like Xmx
+  - Specify the log4j properties file
+  - Specify the location of HDF5 native libraries. 
+  - Delete the remote and local output folder. These output folder are same for each job. 
+  - Submits the multitau-all.jar file to Hadoop MapReduce.
+  - Emit an exit code that matches the hadoop job
+
+To deploy it to the Orthros cluster, you will need to copy couple of files over to the cluster head node (hpcs08.xray.aps.anl.gov):
+
+  scp -r multitauh.sh clean.sh target/xpcs-multitau-hadoop-x.x.x-all.jar lib/ log4j.properties hpcs08:/data/USER/xpcs-x-x-x
+
+Few things to note:
+
+- Make sure that the version of the jar in multitau.sh matches the jar version
+- The path to the native HDF5 libraries is correct. 
