@@ -43,7 +43,7 @@ while getopts i:te:d param
     esac
   done
 
-jhdf5_folder="$XPCS_HADOOP_DIR/lib/linux"
+jhdf5_folder="$XPCS_HADOOP_DIR/lib/linux/x86_64"
 
 export JAVA_LIBRARY_PATH=$jhdf5_folder:$JAVA_LIBRARY_PATH
 
@@ -57,10 +57,10 @@ hadoop_job="$XPCS_HADOOP_DIR/xpcs-hadoop-$version-all.jar"
 
 # The pipeline process doesn't handle a large information (if thrown by hadoop process)
 # on the standard out or standard error. For now, dump all that to /dev/nul
-hadoop jar $hadoop_job $mainClass $params 2>/dev/null
+#hadoop jar $hadoop_job $mainClass $params 2>/dev/null
 
 # Uncomment the line below and comment the one above for better debugging.
-#hadoop jar $hadoop_job $mainClass $params
+hadoop jar $hadoop_job $mainClass $params
 
 ecode=$?
 
