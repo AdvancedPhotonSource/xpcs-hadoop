@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export XPCS_HADOOP_DIR=/local/xpcs-0.5.0
+export XPCS_HADOOP_DIR=.
 
 params="$params -D hadoop.root.logger=DEBUG"
 params="$params -D norm.map.tasks=120 " 
@@ -49,7 +49,7 @@ export JAVA_LIBRARY_PATH=$jhdf5_folder:$JAVA_LIBRARY_PATH
 
 export HADOOP_OPTS="-Djava.library.path=$JAVA_LIBRARY_PATH -Xmx1024m -Dlog4j.configuration=file:$XPCS_HADOOP_DIR/log4j.properties"
 
-#[ -f clean.sh ] && ./clean.sh
+[ -f clean.sh ] && ./clean.sh
 
 version='0.5.0'
 
@@ -57,10 +57,10 @@ hadoop_job="$XPCS_HADOOP_DIR/xpcs-hadoop-$version-all.jar"
 
 # The pipeline process doesn't handle a large information (if thrown by hadoop process)
 # on the standard out or standard error. For now, dump all that to /dev/nul
-#hadoop jar $hadoop_job gov.anl.aps.xpcs.main.Application $params 2>/dev/null
+hadoop jar $hadoop_job $mainClass $params 2>/dev/null
 
 # Uncomment the line below and comment the one above for better debugging.
-hadoop jar $hadoop_job $mainClass $params
+#hadoop jar $hadoop_job $mainClass $params
 
 ecode=$?
 
