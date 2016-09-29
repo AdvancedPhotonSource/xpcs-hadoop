@@ -116,7 +116,6 @@ public class Application extends Configured implements Tool {
 		Thread t = new Thread(hook);
 		Runtime.getRuntime().addShutdownHook(t);
 
-
 		configuration = new XPCSConfig(getConf());
 
 		// TODO XPCSHDFConfig is a lonely object, fix it.
