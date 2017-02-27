@@ -6,40 +6,40 @@ params="$params -D hadoop.root.logger=DEBUG"
 params="$params -D mapred.map.tasks=30 "
 params="$params -D mapred.reduce.tasks=20 "
 params="$params -D mapred.textoutputformat.separator=, "
-#params="$params -D mapred.reduce.parallel.copies=20 "
-#params="$params -D fs.inmemory.size.mb=1024 "
-#params="$params -D io.sort.mb=1024 "
-#params="$params -D io.sort.factor=15 "
-#params="$params -D io.sort.record.percent=0.05 "
-#params="$params -D io.sort.spill.percent=0.95 "
-#params="$params -D mapred.child.java.opts=-Xmx2g "
-#params="$params -D mapred.job.map.memory.mb=1024 "
-#params="$params -D mapred.job.reduce.memory.mb=1024 "
-#params="$params -D mapred.cluster.map.memory.mb=500 "
-#params="$params -D mapred.cluster.max.map.memory.mb=1024 "
-#params="$params -D mapred.cluster.reduce.memory.mb=500 "
-#params="$params -D mapred.cluster.max.reduce.memory.mb=1024 "
-#params="$params -D mapred.reduce.tasks.speculative.execution=false "
-#params="$params -D mapred.job.reuse.jvm.num.tasks=-1 "
-#params="$params -D mapred.output.compression.type=BLOCK "
-#params="$params -D mapred.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec "
-#params="$params -D mapred.map.output.compression.codec=org.apache.hadoop.io.compress.SnappyCodec "
 params="$params -D mapred.compress.map.output=true "
 params="$params -D mapred.compress.output=true "
 params="$params -D xpcs.writeDarkImages=true "
 
 mainClass="gov.anl.aps.xpcs.main.Application"
 
-### Parse script parameters
-while getopts i:te:d param
+### MAGELLAN Parameters
+endpoint='/xpcs'
+hdf5_file='.'
+mageelan=0
+src_pattern='/net/wolf/data/xpcs8/'
+dst_pattern='/mnt/data/xpcs/'
+
+while getopts i:te:dm param
   do 
     case $param in
-        i) params=" $params -D xpcs.config.hdf5=$OPTARG ";;
+        i) 
+            params=" $params -D xpcs.config.hdf5=$OPTARG "
+            hdf5_file=$OPTARG
+            ;;
         t) params=" $params -D xpcs.config.analysis_type=2";;
-        e) params=" $params -D xpcs.config.hdf5.endpoint=$OPTARG";;
+        e) 
+            params=" $params -D xpcs.config.hdf5.endpoint=$OPTARG"
+            endpoint=$OPTARG
+            ;;
 	    d) mainClass="gov.anl.aps.xpcs.main.DebugJob";; 
+        m) magellan=1 ;;
     esac
   done
+
+if [ $magellan -eq 1 ]; then
+    path=`./magellan_path.py $endpoint $src_pattern $dst_pattern $hdf5_file`
+    ./hadoop_copy.sh $path
+fi
 
 jhdf5_folder="$XPCS_HADOOP_DIR/lib/linux/x86_64"
 
@@ -58,7 +58,7 @@ hadoop_job="$XPCS_HADOOP_DIR/xpcs-hadoop-$version-all.jar"
 #hadoop jar $hadoop_job $mainClass $params 2>/dev/null
 
 # Uncomment the line below and comment the one above for better debugging.
-hadoop jar $hadoop_job $mainClass $params
+# hadoop jar $hadoop_job $mainClass $params
 
 ecode=$?
 
