@@ -349,6 +349,8 @@ public class DarkImage {
         }
 
         int samples = 1;
+	if (darkStart < 0 || darkEnd < 0) return;
+
         // darkStart index starts from 1, thats why we have <= in the loop. 
         for (int i = darkStart; i <= darkEnd; i++) {
             ShortBuffer image = readImage(fileIn);
