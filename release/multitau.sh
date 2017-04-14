@@ -18,6 +18,7 @@ hdf5_file='.'
 mageelan=0
 src_pattern='/net/wolf/data/xpcs8/'
 dst_pattern='/mnt/data/xpcs/'
+magellan=0
 
 while getopts i:te:dm param
   do 
@@ -55,10 +56,10 @@ hadoop_job="$XPCS_HADOOP_DIR/xpcs-hadoop-$version-all.jar"
 
 # The pipeline process doesn't handle a large information (if thrown by hadoop process)
 # on the standard out or standard error. For now, dump all that to /dev/nul
-#hadoop jar $hadoop_job $mainClass $params 2>/dev/null
+hadoop jar $hadoop_job $mainClass $params 2>/dev/null
 
 # Uncomment the line below and comment the one above for better debugging.
-# hadoop jar $hadoop_job $mainClass $params
+#hadoop jar $hadoop_job $mainClass $params
 
 ecode=$?
 
